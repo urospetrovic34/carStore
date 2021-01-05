@@ -10,9 +10,9 @@ function App() {
       <Router>
         <div className="App">
           <Switch>
-            <Route path="/" exact component={App}/>
-            <Route path="/pretraga" exact component={App}/>
-            <Route path="/:id" exact component={App}/>
+            <Route path="/" exact component={}/>
+            <Route path="/pretraga" exact component={}/>
+            <Route path="/:id" exact component={}/>
           </Switch>
         </div>
       </Router>
