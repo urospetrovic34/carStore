@@ -55,6 +55,7 @@ router.post('/', async (req,res)=>{
         console.error(error.message);
         res.status(500).send('Serverska greska')
     }
+    
 })
 
 router.get('/', auth, async (req,res) => {
@@ -69,6 +70,7 @@ router.get('/', auth, async (req,res) => {
     {
         res.status(500).send('Serverska greska')        
     }
+
 })
 
 router.post('/login', async (req, res) => {
@@ -116,6 +118,7 @@ router.post('/login', async (req, res) => {
     {
         res.status(500).send('Serverska greska')
     }
+
 })
 
 module.exports = router
