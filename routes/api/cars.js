@@ -38,11 +38,11 @@ router.get('/', async (req,res) => {
 
 })
 
-router.post('/', auth, async (req,res) => {
+router.post('/'/*, auth*/, async (req,res) => {
 
     try 
     {
-        const user = await User.findById(req.user.id).select('-password')
+        //const user = await User.findById(req.user.id).select('-password')
 
         const newCar = new Car({
             marka:req.body.marka,
@@ -55,7 +55,8 @@ router.post('/', auth, async (req,res) => {
             snagaMotora:req.body.snagaMotora,
             cena:req.body.cena,
             slika:req.body.slika,
-            user:req.user.id,
+            /*user:user.id,*/
+            user:req.body.user,
         })
 
         const car = await newCar.save()

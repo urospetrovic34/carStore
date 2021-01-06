@@ -36,7 +36,7 @@ const CarSchema = new Schema({
     },
     cena:{
         type:Number,
-        required: true
+        required: false
     },
     slika:{
         type:String,
