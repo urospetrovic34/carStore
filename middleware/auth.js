@@ -12,7 +12,7 @@ function auth(req,res,next)
     try 
     {
         const decoded = jwt.verify(token,process.env.JWT)
-        req.user = decoded
+        req.user = decoded.user
         next()
     } 
     catch (error) 

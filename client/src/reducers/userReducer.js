@@ -20,7 +20,7 @@ export default function(state = initialState, action)
         case USER_LOADED:
             return{
                 ...state,
-                isLoading:true,
+                isLoading:false,
                 isAuthenticated:true,
                 user:action.payload
             }
@@ -31,7 +31,7 @@ export default function(state = initialState, action)
                 ...state,
                 ...action.payload,
                 isAuthenticated:true,
-                isLoading:false
+                isLoading:false,
             }
         case USER_ERROR:
         case LOGOUT_SUCCESS:

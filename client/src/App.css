@@ -1,0 +1,103 @@
+.containerflex{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:stretch;
+  align-content:flex-start;    
+}
+.container img{
+  object-fit: cover;
+  width: 240px;
+  height: 135px;
+}
+
+.container a{
+  text-decoration:none;
+  color:black;
+}
+
+.container a:hover{
+  text-decoration:none;
+  color:black;
+}
+
+.text-white a:hover{
+  text-decoration:none;
+}
+
+.carsDisplay {
+  display: flex;
+  flex-wrap:wrap;
+  margin: 0;
+  padding: 0;
+}
+
+.carCard {
+  flex: 0 0 33%;
+  width:33%;
+}
+
+@media (max-width:920px){
+  .carCard{
+    flex: 1 1 21%;
+  }
+}
+
+.carImage img {
+  width: 100%;
+}
+
+.carInfo {
+  margin-top:auto;
+}
+
+.centreImg {
+  position: relative;
+  text-align: center; 
+  width: 100%;
+}
+
+.centreImg:hover img{
+  filter: brightness(75%);
+}
+
+.centreImg:hover h6{
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+.centreImg:hover p{
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+.centreImg img{
+  position: relative;
+  text-align: center; 
+  width: 100%;
+  transition: 0.3s;
+}
+
+.centreImg h6{
+  margin-top:auto;
+  position: absolute; 
+  top: 70%;
+  left: 50%;
+  width: 100%;
+  color: white; 
+  opacity: 0;
+  transition: transform 0.3s linear;
+  transform: translate(-50%,0);
+}
+
+.centreImg p{
+  margin-top:auto;
+  position: absolute; 
+  top: 85%;
+  width: 100%;
+  left: 50%;
+  color: white; 
+  opacity: 0;
+  transition: transform 0.3s linear;
+  transform: translate(-50%,0);
+}

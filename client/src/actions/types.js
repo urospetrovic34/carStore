@@ -1,10 +1,12 @@
 export const GET_CARS = 'GET_CARS'
+export const GET_MYCARS = 'GET_MYCARS'
+export const GET_LAST20CARS = 'GET_LAST20CARS'
 export const GET_CAR = 'GET_CAR'
 export const ADD_CAR = 'ADD_CAR'
 export const DELETE_CAR = 'DELETE_CAR'
 export const EDIT_CAR = 'EDIT_CAR'
 export const CARS_LOADING = 'CARS_LOADING'
-export const CAR_REMOVE = 'CAR_REMOVE'
+export const CAR_ERROR = 'CAR_ERROR'
 
 export const USER_LOADING = 'USER_LOADING'
 export const USER_LOADED = 'USER_LOADED'

@@ -1,13 +1,13 @@
 import axios from 'axios'
 import {USER_LOADING,USER_LOADED,USER_ERROR,LOGIN_SUCCESS,LOGIN_FAIL,LOGOUT_SUCCESS,REGISTER_SUCCESS,REGISTER_FAIL} from './types'
 
-export const loadUser = () => async dispatch => {
+export const loadUser = () => async (dispatch,getState) => {
 
     try 
     {
-        dispatch({USER_LOADING})
+        dispatch({type:USER_LOADING})
 
-        const response = await axios.get('/api/users',tokenConfig)
+        const response = await axios.get('/api/users',tokenConfig(getState))
 
         dispatch({
             type:USER_LOADED,
@@ -16,6 +16,7 @@ export const loadUser = () => async dispatch => {
     } 
     catch (error) 
     {
+        console.log(error.message)
         dispatch({type:USER_ERROR})
     }
 
@@ -33,6 +34,8 @@ export const register = ({username,email,password}) => async dispatch => {
             type:REGISTER_SUCCESS,
             payload:response.data
         })
+
+        dispatch(loadUser())
     } 
     catch (error) 
     {
@@ -53,6 +56,8 @@ export const login = ({email,password}) => async dispatch => {
             type:LOGIN_SUCCESS,
             payload:response.data
         })
+
+        dispatch(loadUser())
     } 
     catch (error) 
     {

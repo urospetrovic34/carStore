@@ -1,9 +1,10 @@
 const express = require('express')
+const mongoose = require('mongoose')
 const router = express.Router()
 const auth = require('../../middleware/auth')
 const checkObjectId = require('../../middleware/checkObjectId')
 const Car = require('../../models/Car')
-const User = require('../../models/User')
+const upload = require('../../middleware/multer')
 
 router.get('/', async (req,res) => {
 
@@ -15,6 +16,7 @@ router.get('/', async (req,res) => {
         const marka = req.query.marka
         const model = req.query.model
         const karoserija = req.query.karoserija
+
         if(marka !== undefined)
         {
             query['marka']=marka
@@ -27,7 +29,8 @@ router.get('/', async (req,res) => {
         {
             query['karoserija']=karoserija
         }
-        const cars = await Car.find(query).sort([[sortBy,orderBy]]).limit(10)
+        const cars = await Car.find(query).sort([[sortBy,orderBy]])
+
         res.json(cars)
     } 
     catch (error) 
@@ -38,12 +41,43 @@ router.get('/', async (req,res) => {
 
 })
 
-router.post('/'/*, auth*/, async (req,res) => {
+router.get('/myCars', auth, async (req,res) => {
 
     try 
     {
-        //const user = await User.findById(req.user.id).select('-password')
+        const cars = await Car.find({user:mongoose.Types.ObjectId(req.user.id)})
 
+        res.json(cars)
+    } 
+    catch (error) 
+    {
+        console.error(error.message)
+        res.status(500).send('Serverska greska')
+    }
+
+})
+
+router.get('/last20cars', async (req,res) => {
+
+    try 
+    {
+        const cars = await Car.find().sort({datum:-1}).limit(20)
+
+        res.json(cars)
+    } 
+    catch (error) 
+    {
+        console.error(error.message)
+        res.status(500).send('Serverska greska')
+    }
+
+})
+
+//stoji samo p zato sto javlja gresku unexpected field, umesto slika
+router.post('/', auth, upload.single('p'), async (req,res) => {
+    
+    try 
+    {    
         const newCar = new Car({
             marka:req.body.marka,
             model:req.body.model,
@@ -54,14 +88,16 @@ router.post('/'/*, auth*/, async (req,res) => {
             kubikaza:req.body.kubikaza,
             snagaMotora:req.body.snagaMotora,
             cena:req.body.cena,
-            slika:req.body.slika,
-            /*user:user.id,*/
-            user:req.body.user,
+            slika:req.file.path,
+            user:mongoose.Types.ObjectId(req.user.id),
         })
 
         const car = await newCar.save()
 
-        res.json(car)
+        if(car) 
+        {
+            res.json(car)    
+        }
     } 
     catch (error) 
     {
@@ -92,7 +128,7 @@ router.get('/:id', async (req,res) => {
 
 })
 
-router.delete(':id', auth, checkObjectId('id'), async(req,res) => {
+router.delete('/:id', auth, checkObjectId('id'), async(req,res) => {
 
     try 
     {
@@ -120,11 +156,11 @@ router.delete(':id', auth, checkObjectId('id'), async(req,res) => {
 
 })
 
-router.put(':id', auth, checkObjectId('id'), async(req,res) => {
+router.put('/:id', auth, checkObjectId('id'), async(req,res) => {
 
     try 
     {
-        const car = await Car.findById(req.params.id)
+        let car = await Car.findById(req.params.id)
 
         if(!car)
         {

@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcryptjs')
+const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const auth = require('../../middleware/auth')
 
@@ -55,14 +56,14 @@ router.post('/', async (req,res)=>{
         console.error(error.message);
         res.status(500).send('Serverska greska')
     }
-    
+
 })
 
 router.get('/', auth, async (req,res) => {
 
     try 
     {
-        const user = await User.findById(req.user.id).select('-password')
+        const user = await User.findById(mongoose.Types.ObjectId(req.user.id)).select('-password')
 
         res.json(user)
     } 

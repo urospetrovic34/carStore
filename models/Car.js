@@ -4,49 +4,52 @@ const Schema = mongoose.Schema
 const CarSchema = new Schema({
     marka:{
         type:String,
-        required: true
+        required: false
     },
     model:{
         type:String,
-        required: true
+        required: false
     },
     godiste:{
         type:Number,
-        required: true
+        required: false
     },
     kilometraza:{
         type:Number,
-        required: true
+        required: false
     },
     karoserija:{
         type:String,
-        required: true
+        required: false
     },
     gorivo:{
         type:String,
-        required: true
+        required: false
     },
     kubikaza:{
         type:Number,
-        required: true
+        required: false
     },
     snagaMotora:{
         type:Number,
-        required: true
+        required: false
     },
     cena:{
         type:Number,
         required: false
     },
     slika:{
-        type:String,
-        required: true
+        type:String
     },
     user:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'User',
-        required: true
-    }
+        ref:'user',
+        required: false
+    },
+    datum: {
+        type: Date,
+        default: Date.now
+    },
 })
 
 module.exports = Car = mongoose.model('car',CarSchema)
