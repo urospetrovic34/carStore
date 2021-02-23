@@ -1,3 +1,7 @@
+*{
+  box-sizing:border-box;
+}
+
 .containerflex{
   display:flex;
   flex-wrap:wrap;
@@ -5,10 +9,270 @@
   align-items:stretch;
   align-content:flex-start;    
 }
+
+.carousel-indicators li { visibility: hidden; }
+
+.maloVeciTekst{
+  font-size:1.5rem;
+}
+
+.searchImage {
+  object-fit: cover;
+  width: 100%;
+  height: 200px;
+  transition: 0.3s;
+}
+
+.searchImage:hover {
+  filter: brightness(75%);
+  cursor: pointer;
+}
+
+.searchFlex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.searchFlex > div{
+  flex: 1 1 30%;
+}
+
+.noDecor {
+  text-decoration: none;
+  color: black;
+}
+
+.heading-search {
+  font-size: 0.9rem;
+}
+
+.noDecor:hover {
+  text-decoration: none;
+  color: black;
+}
+
+
+@media (max-width:920px){
+  .searchFlex > div{
+    flex: 1 1 100%;
+  }
+}
+
+.caption {
+  position: absolute;
+  bottom:83%;
+  left:84%;
+  background-color:black;
+  padding: 10px 15px 0 15px;
+  opacity: 0.5;
+  color:white;
+  border-radius:5px;
+}
+
+.captionLokacija{
+  position: absolute;
+  bottom:83%;
+  left:5%;
+  background-color:black;
+  padding: 10px 15px 0 15px;
+  opacity: 0.5;
+  color:white;
+  border-radius:5px;
+}
+
+.modalStrelicaLevo{
+  position: absolute;
+  top:50%;
+  left:3%;
+  color:white;
+  font-size:2rem;
+  transition: 0.3s;
+}
+
+.modalStrelicaLevo:hover{
+  cursor: pointer;
+}
+
+.modalStrelicaDesno{
+  position: absolute;
+  top:50%;
+  left:95%;
+  color:white;
+  font-size:2rem;
+  transition: 0.3s;
+}
+
+.topSeparator{
+  border-top-style: solid;
+  border-color: #d9d9d9;
+  border-width: 3px;
+}
+
+.bg-gray{
+  background-color:#f0f0f0;
+  color: black;
+}
+
+.modalStrelicaDesno:hover{
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .captionLokacija {
+    left:3%;
+  }
+}
+@media (min-width: 992px) {
+  .captionLokacija {
+    left:3%;
+  }
+}
+@media (min-width: 1200px) {
+  .captionLokacija {
+    left:4%;
+  }
+}
+
+@media (min-width: 768px) {
+  .caption {
+    left:89%;
+  }
+}
+@media (min-width: 992px) {
+  .caption {
+    left:88%;
+  }
+}
+@media (min-width: 1200px) {
+  .caption {
+    left:88%;
+  }
+}
+
+.singleCarPageContainer{
+  width: 50%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.singleCarPageContainer > div {
+  flex: 1 1 150px;
+}
+
 .container img{
   object-fit: cover;
   width: 240px;
   height: 135px;
+}
+
+.removeSidePads {
+  padding-left:0;
+  padding-right:0;
+}
+
+.carouselContainer img{
+  object-fit: cover;
+  width: 100%;
+  height: 55vh;
+}
+
+.carouselContainer img:hover{
+  cursor: pointer;
+}
+
+.modalCustomWidth{
+  width: 100%;
+}
+
+.customButton {
+  display: inline-block;
+  width:20%;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+      touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+}
+.customButton:focus,
+.customButton:active:focus,
+.customButton.active:focus,
+.customButton.focus,
+.customButton:active.focus,
+.customButton.active.focus {
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+.customButton:hover,
+.customButton:focus,
+.customButton.focus {
+  color: #333;
+  text-decoration: none;
+}
+.customButton:active,
+.customButton.active {
+  background-image: none;
+  outline: 0;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+          box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+}
+.customButton.disabled,
+.customButton[disabled],
+fieldset[disabled] .customButton {
+  cursor: not-allowed;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  opacity: .65;
+}
+
+.maloManjiTekst{
+  font-size:0.8rem;
+}
+
+.maloManjiTekst2{
+  font-size:0.9rem
+}
+
+.imgFlex {
+  object-fit: cover;
+  width: 1024px;
+  height: 576px;
+  width:100%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.modalImage {
+  object-fit: cover;
+  width: 100%;
+  height: 85vh;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.customFlexDodatno {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.customFlexDodatno > p {
+  flex: 2 2 50%;
+}
+
+.opisniText {
+  white-space: pre-wrap;
 }
 
 .container a{
@@ -100,4 +364,21 @@
   opacity: 0;
   transition: transform 0.3s linear;
   transform: translate(-50%,0);
+}
+
+.textarea {
+  resize: none;
+  transition: width .35s ease-in-out;
+  opacity: 1;
+}
+
+.paternBackground{
+  background-image: url("./stripe_e816f99cd0d42a59041a57a639adf9ec.png");
+  background-repeat: repeat-x repeat-y;
+}
+
+.preview img{
+  object-fit: contain;
+  width: 96px;
+  height: 96px;
 }

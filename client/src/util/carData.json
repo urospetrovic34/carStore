@@ -1,0 +1,776 @@
+[
+    {
+      "brand": "Audi",
+      "models": [
+        {
+          "name": "A3"
+        },
+        {
+          "name": "A4"
+        },
+        {
+          "name": "A5"
+        },
+        {
+          "name": "A6"
+        },
+        {
+          "name": "A7"
+        },
+        {
+          "name": "A8"
+        },
+        {
+          "name": "Q3"
+        },
+        {
+          "name": "Q5"
+        },
+        {
+          "name": "Q7"
+        },
+        {
+          "name": "Q8"
+        },
+        {
+          "name": "R8"
+        },
+        {
+          "name": "RS 3"
+        },
+        {
+          "name": "RS 5"
+        },
+        {
+          "name": "RS 6"
+        },
+        {
+          "name": "RS 7"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "S4"
+        },
+        {
+          "name": "S5"
+        },
+        {
+          "name": "TT"
+        }
+      ]
+    },
+    {
+      "brand": "BMW",
+      "models": [
+        {
+          "name": "Serija 1"
+        },
+        {
+          "name": "Serija 2"
+        },
+        {
+          "name": "Serija 3"
+        },
+        {
+          "name": "Serija 4"
+        },
+        {
+          "name": "Serija 5"
+        },
+        {
+          "name": "Serija 6"
+        },
+        {
+          "name": "Serija 7"
+        },
+        {
+          "name": "Serija 8"
+        },
+        {
+          "name": "i3"
+        },
+        {
+          "name": "i8"
+        },
+        {
+          "name": "M2"
+        },
+        {
+          "name": "M3"
+        },
+        {
+          "name": "M4"
+        },
+        {
+          "name": "M5"
+        },
+        {
+          "name": "M6"
+        },
+        {
+          "name": "M8"
+        },
+        {
+          "name": "X1"
+        },
+        {
+          "name": "X2"
+        },
+        {
+          "name": "X3"
+        },
+        {
+          "name": "X4"
+        },
+        {
+          "name": "X5"
+        },
+        {
+          "name": "X6"
+        },
+        {
+          "name": "X7"
+        },
+        {
+          "name": "Z3"
+        },
+        {
+          "name": "Z4"
+        }
+      ]
+    },
+    {
+      "brand": "Mercedes-Benz",
+      "models": [
+        {
+          "name": "C"
+        },
+        {
+          "name": "CL"
+        },
+        {
+          "name": "CLA"
+        },
+        {
+          "name": "CLK"
+        },
+        {
+          "name": "CLS"
+        },
+        {
+          "name": "E"
+        },
+        {
+          "name": "G"
+        },
+        {
+          "name": "GL"
+        },
+        {
+          "name": "GLA"
+        },
+        {
+          "name": "GLB"
+        },
+        {
+          "name": "GLC"
+        },
+        {
+          "name": "GLE"
+        },
+        {
+          "name": "GLK"
+        },
+        {
+          "name": "GLS"
+        },
+        {
+          "name": "M"
+        },
+        {
+          "name": "R"
+        },
+        {
+          "name": "S"
+        },
+        {
+          "name": "SL"
+        },
+        {
+          "name": "SLK"
+        },
+        {
+          "name": "SLC"
+        },
+        {
+          "name": "Sprinter"
+        },
+        {
+          "name": "Metris"
+        },
+        {
+          "name": "ANG GT"
+        },
+        {
+          "name": "300"
+        }
+      ]
+    },
+    {
+      "brand": "Volkswagen",
+      "models": [
+        {
+          "name": "Golf"
+        },
+        {
+          "name": "Jetta"
+        },
+        {
+          "name": "Beetle"
+        },
+        {
+          "name": "Arteon"
+        },
+        {
+          "name": "Passat"
+        },
+        {
+          "name": "Touareg"
+        },
+        {
+          "name": "Atlas"
+        },
+        {
+          "name": "GTI"
+        }
+      ]
+    },
+    {
+      "brand": "Opel",
+      "models": [
+        {
+          "name": "Astra"
+        },
+        {
+          "name": "Corsa"
+        },
+        {
+          "name": "Insignia"
+        },
+        {
+          "name": "Zafira"
+        },
+        {
+          "name": "Meriva"
+        }
+      ]
+    },
+    {
+      "brand": "Toyota",
+      "models": [
+        {
+          "name": "Celica"
+        },
+        {
+          "name": "Corolla"
+        },
+        {
+          "name": "Prius"
+        },
+        {
+          "name": "4Runner"
+        },
+        {
+          "name": "RAV4"
+        },
+        {
+          "name": "Yaris"
+        },
+        {
+          "name": "Supra"
+        },
+        {
+          "name": "Camry"
+        },
+        {
+          "name": "Land Cruiser"
+        }
+      ]
+    },
+    {
+      "brand": "Honda",
+      "models": [
+        {
+          "name": "Accord"
+        },
+        {
+          "name": "Civic"
+        },
+        {
+          "name": "CR-V"
+        },
+        {
+          "name": "CR-Z"
+        },
+        {
+          "name": "S2000"
+        },
+        {
+          "name": "HR-V"
+        },
+        {
+          "name": "Integra"
+        },
+        {
+          "name": "Odyssey"
+        }
+      ]
+    },
+    {
+      "brand": "Nissan",
+      "models": [
+        {
+          "name": "350Z"
+        },
+        {
+          "name": "370Z"
+        },
+        {
+          "name": "Altima"
+        },
+        {
+          "name": "Cube"
+        },
+        {
+          "name": "Armada"
+        },
+        {
+          "name": "GT-R"
+        },
+        {
+          "name": "Juke"
+        },
+        {
+          "name": "LEAF"
+        },
+        {
+          "name": "Maxima"
+        },
+        {
+          "name": "Murano"
+        },
+        {
+          "name": "Sentra"
+        },
+        {
+          "name": "Skyline"
+        },
+        {
+          "name": "NV200"
+        },
+        {
+          "name": "Pathfinder"
+        },
+        {
+          "name": "Titan"
+        },
+        {
+          "name": "Almera"
+        }
+      ]
+    },
+    {
+      "brand": "Mazda",
+      "models": [
+        {
+          "name": "CX-3"
+        },
+        {
+          "name": "CX-5"
+        },
+        {
+          "name": "CX-7"
+        },
+        {
+          "name": "CX-9"
+        },
+        {
+          "name": "MAZDA2"
+        },
+        {
+          "name": "MAZDA3"
+        },
+        {
+          "name": "MAZDA5"
+        },
+        {
+          "name": "MAZDA6"
+        },
+        {
+          "name": "MAZDASPEED3"
+        },
+        {
+          "name": "MX-5"
+        }
+      ]
+    },
+    {
+      "brand": "Mitsubishi",
+      "models": [
+        {
+          "name": "Eclipse"
+        },
+        {
+          "name": "Galant"
+        },
+        {
+          "name": "Lancer"
+        },
+        {
+          "name": "Lancer Evolution"
+        },
+        {
+          "name": "Mirage"
+        },
+        {
+          "name": "Outlander"
+        }
+      ]
+    },
+    {
+      "brand": "Suzuki",
+      "models": [
+        {
+          "name": "Grand Vitara"
+        },
+        {
+          "name": "SX4"
+        },
+        {
+          "name": "XL-7"
+        },
+        {
+          "name": "Swift"
+        },
+        {
+          "name": "Alto"
+        },
+        {
+          "name": "Vitara"
+        }
+      ]
+    },
+    {
+      "brand": "Subaru",
+      "models": [
+        {
+          "name": "BRZ"
+        },
+        {
+          "name": "Impreza"
+        },
+        {
+          "name": "Outback"
+        },
+        {
+          "name": "WRX"
+        },
+        {
+          "name": "Tribeca"
+        }
+      ]
+    },
+    {
+      "brand": "Acura",
+      "models": [
+        {
+          "name": "MDX"
+        },
+        {
+          "name": "NSX"
+        },
+        {
+          "name": "RDX"
+        },
+        {
+          "name": "RLX"
+        },
+        {
+          "name": "RSX"
+        },
+        {
+          "name": "TSX"
+        },
+        {
+          "name": "ILX"
+        },
+        {
+          "name": "TLX"
+        }
+      ]
+    },
+    {
+      "brand": "Lexus",
+      "models": [
+        {
+          "name": "CT Hybrid"
+        },
+        {
+          "name": "ES 300"
+        },
+        {
+          "name": "ES 350"
+        },
+        {
+          "name": "GS 300"
+        },
+        {
+          "name": "GS 350"
+        },
+        {
+          "name": "GX 470"
+        },
+        {
+          "name": "IS 250"
+        },
+        {
+          "name": "IS 350"
+        },
+        {
+          "name": "LC"
+        },
+        {
+          "name": "LS 460"
+        },
+        {
+          "name": "LS 500"
+        },
+        {
+          "name": "LX 470"
+        },
+        {
+          "name": "LX 570"
+        },
+        {
+          "name": "GS F"
+        },
+        {
+          "name": "RC F"
+        },
+        {
+          "name": "RX 350"
+        }
+      ]
+    },
+    {
+      "brand": "INFINITI",
+      "models": [
+        {
+          "name": "G25"
+        },
+        {
+          "name": "G35"
+        },
+        {
+          "name": "G37"
+        },
+        {
+          "name": "JX35"
+        },
+        {
+          "name": "M35"
+        },
+        {
+          "name": "M37"
+        },
+        {
+          "name": "Q50"
+        },
+        {
+          "name": "Q60"
+        },
+        {
+          "name": "Q70"
+        },
+        {
+          "name": "QX30"
+        },
+        {
+          "name": "QX50"
+        },
+        {
+          "name": "QX60"
+        },
+        {
+          "name": "QX70"
+        },
+        {
+          "name": "QX80"
+        }
+      ]
+    },
+    {
+      "brand": "Fiat",
+      "models": [
+        {
+          "name": "124 Spider"
+        },
+        {
+          "name": "500"
+        },
+        {
+          "name": "500L"
+        },
+        {
+          "name": "Punto"
+        },
+        {
+          "name": "Tipo"
+        },
+        {
+          "name": "Bravo"
+        },
+        {
+          "name": "Brava"
+        },
+        {
+          "name": "Multipla"
+        }
+      ]
+    },
+    {
+      "brand": "Alfa Romeo",
+      "models": [
+        {
+          "name": "Giulia"
+        },
+        {
+          "name": "Stelvio"
+        },
+        {
+          "name": "147"
+        },
+        {
+          "name": "4C"
+        },
+        {
+          "name": "Brera"
+        },
+        {
+          "name": "Giulietta"
+        },
+        {
+          "name": "MiTo"
+        },
+        {
+          "name": "90"
+        },
+        {
+          "name": "8C Competizione"
+        }
+      ]
+    },
+    {
+      "brand": "Lancia",
+      "models": [
+        {
+          "name": "Delta"
+        },
+        {
+          "name": "Stratos"
+        },
+        {
+          "name": "Ypsilon"
+        },
+        {
+          "name": "Fulvia"
+        },
+        {
+          "name": "Flavia"
+        },
+        {
+          "name": "Thema"
+        },
+        {
+          "name": "Prisma"
+        }
+      ]
+    },
+    {
+      "brand": "Renault",
+      "models": [
+        {
+          "name": "Clio"
+        },
+        {
+          "name": "Megane"
+        },
+        {
+          "name": "Twingo"
+        },
+        {
+          "name": "Scenic"
+        },
+        {
+          "name": "5"
+        }
+      ]
+    },
+    {
+      "brand": "Peugeot",
+      "models": [
+        {
+          "name": "308"
+        },
+        {
+          "name": "307"
+        },
+        {
+          "name": "508"
+        },
+        {
+          "name": "407"
+        },
+        {
+          "name": "206"
+        },
+        {
+          "name": "207"
+        },
+        {
+          "name": "5008"
+        }
+      ]
+    },
+    {
+      "brand": "Citroen",
+      "models": [
+        {
+          "name": "C1"
+        },
+        {
+          "name": "C3"
+        },
+        {
+          "name": "C4"
+        },
+        {
+          "name": "C5"
+        },
+        {
+          "name": "Xsara"
+        },
+        {
+          "name": "Berlingo"
+        },
+        {
+          "name": "Nemo"
+        },
+        {
+          "name": "Dispatch"
+        }
+      ]
+    }
+  ]

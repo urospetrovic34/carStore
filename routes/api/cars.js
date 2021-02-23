@@ -4,7 +4,10 @@ const router = express.Router()
 const auth = require('../../middleware/auth')
 const checkObjectId = require('../../middleware/checkObjectId')
 const Car = require('../../models/Car')
+const {Storage} = require('@google-cloud/storage')
 const upload = require('../../middleware/multer')
+const {format} = require('util')
+const { v4: uuid } = require("uuid")
 
 router.get('/', async (req,res) => {
 
@@ -16,6 +19,9 @@ router.get('/', async (req,res) => {
         const marka = req.query.marka
         const model = req.query.model
         const karoserija = req.query.karoserija
+
+        const stranaSize = 9
+        const strana = Number(req.query.brojStrane) || 1
 
         if(marka !== undefined)
         {
@@ -29,9 +35,11 @@ router.get('/', async (req,res) => {
         {
             query['karoserija']=karoserija
         }
-        const cars = await Car.find(query).sort([[sortBy,orderBy]])
 
-        res.json(cars)
+        const count = await Car.countDocuments(query)
+        const cars = await Car.find(query).sort([[orderBy,sortBy]]).limit(stranaSize).skip(stranaSize * (strana - 1))
+
+        res.json({cars,strana,strane: Math.ceil(count/stranaSize)})
     } 
     catch (error) 
     {
@@ -73,37 +81,154 @@ router.get('/last20cars', async (req,res) => {
 
 })
 
-//stoji samo p zato sto javlja gresku unexpected field, umesto slika
-router.post('/', auth, upload.single('p'), async (req,res) => {
+const storage = new Storage({
+    projectId:process.env.GOOGLE_PROJECT_ID,
+    keyFileName:process.env.GOOGLE_APPLICATION_CREDENTIALS
+})
+
+const bucket = storage.bucket(process.env.GOOGLE_BUCKET_PATH)
+
+const imageUpload = (fajl) => {
+    return new Promise((resolve,reject) => {
+
+        if(!fajl)
+        {
+            reject("No file")
+        }
+
+        let newName = `${fajl.originalname}_${Date.now()}`
     
+        let fileUpload = bucket.file(newName)
+
+        let niz = []
+    
+        const blobStream = fileUpload.createWriteStream({
+            metadata:{
+                contentType: fajl.mimetype,
+                metadata:{
+                    firebaseStorageDownloadTokens:uuid()
+                }
+            }
+        })
+    
+        blobStream.on('error',(error) => {
+            reject("Lionel Ritchie")
+            console.error(error.message)
+        })
+    
+        blobStream.on('finish',() => {
+            fileUpload.getSignedUrl({action:'read',expires:'01-01-2999'},function(error,url){
+                resolve(url)
+            })
+        })
+    
+        blobStream.end(fajl.buffer)
+    })
+}
+
+//stoji samo p zato sto javlja gresku unexpected field, umesto slika
+router.post('/', auth, upload.array('photoFiles',8), async (req,res) => {
+
     try 
-    {    
+    {
+        const nizFajlova = req.files
+
+        const niz = []
+
+        if(nizFajlova)
+        {
+            for(let i=0;i<nizFajlova.length;i++)
+            {
+                let a = await imageUpload(nizFajlova[i])
+                console.log(a)
+                niz.push(a)
+            }
+        }
+
+        console.log(niz)
+
         const newCar = new Car({
             marka:req.body.marka,
             model:req.body.model,
             godiste:req.body.godiste,
-            kilometraza:req.body.kilometraza,
             karoserija:req.body.karoserija,
             gorivo:req.body.gorivo,
+            obelezje:req.body.obelezje,
             kubikaza:req.body.kubikaza,
-            snagaMotora:req.body.snagaMotora,
+            snaga:req.body.snaga,
+            kilometraza:req.body.kilometraza,
+            pogon:req.body.pogon,
+            emisionaKlasaMotora:req.body.emisionaKlasaMotora,
+            menjac:req.body.menjac,
+            brojVrata:req.body.brojVrata,
+            brojSedista:req.body.brojSedista,
+            stranaVolana:req.body.stranaVolana,
+            klima:req.body.klima,
+            boja:req.body.boja,
+            //registrovanDo:req.body.registrovanDo,
+            ostecenje:req.body.ostecenje,
+            zamena:req.body.zamena,
+            porekloVozila:req.body.porekloVozila,
+            zemljaUvoza:req.body.zemljaUvoza,
+            brojSasije:req.body.brojSasije,
+            airbag:req.body.airbag,
+            abs:req.body.abs,
+            alarm:req.body.alarm,
+            blokadaMotora:req.body.blokadaMotora,
+            kodiranKljuc:req.body.kodiranKljuc,
+            centralnoZakljucavanje:req.body.centralnoZakljucavanje,
+            asr:req.body.asr,
+            mehanickaZastita:req.body.mehanickaZastita,
+            childLock:req.body.childLock,
+            metalikBoja:req.body.metalikBoja,
+            servoVolan:req.body.servoVolan,
+            siber:req.body.siber,
+            daljinskoZakljucavanje:req.body.daljinskoZakljucavanje,
+            toniranaStakla:req.body.toniranaStakla,
+            elektricniPodizaci:req.body.elektricniPodizaci,
+            elektricniRetrovizori:req.body.elektricniRetrovizori,
+            xenonSvetla:req.body.xenonSvetla,
+            krovniNosac:req.body.krovniNosac,
+            kukaZaVucu:req.body.kukaZaVucu,
+            kamera:req.body.kamera,
+            dpfFilter:req.body.dpfFilter,
+            multimedija:req.body.multimedija,
+            parkingSenzori:req.body.parkingSenzori,
+            podesivaSedista:req.body.podesivaSedista,
+            prviVlasnik:req.body.prviVlasnik,
+            garancija:req.body.garancija,
+            garaziran:req.body.garaziran,
+            servisnaKnjiga:req.body.servisnaKnjiga,
+            rezervniKljuc:req.body.rezervniKljuc,
+            restauiran:req.body.restauiran,
+            oldtimer:req.body.oldtimer,
+            taxi:req.body.taxi,
+            tuning:req.body.tuning,
             cena:req.body.cena,
-            slika:req.file.path,
+            fiksnaCena:req.body.fiksnaCena,
+            licitiranje:req.body.licitiranje,
+            opisZamene:req.body.opisZamene,
+            dodatniOpis:req.body.dodatniOpis,
+            ime:req.body.ime,
+            adresa:req.body.adresa,
+            telefon:req.body.telefon,
+            mesto:req.body.mesto,
+            slike:niz,
             user:mongoose.Types.ObjectId(req.user.id),
         })
 
         const car = await newCar.save()
 
-        if(car) 
-        {
-            res.json(car)    
-        }
+        console.log(car)
     } 
     catch (error) 
     {
         console.error(error.message)
         res.status(500).send('Serverska greska')
     }
+
+    //console.log(req.body)
+    //console.log(req.files)
 
 })
 

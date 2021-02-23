@@ -45,7 +45,7 @@ export class AppNavbar extends Component {
 
         const loggedIn = (
             <Fragment>
-                <Dropdown onMouseClick={this.onMouseEnter} isOpen={this.state.isDropdownOpen} toggle={this.dropDownToggle}>
+                <Dropdown onClick={this.onMouseEnter} isOpen={this.state.isDropdownOpen} toggle={this.dropDownToggle}>
                     <DropdownToggle color="danger" caret>
                             {user ? user.username : ""}
                     </DropdownToggle>

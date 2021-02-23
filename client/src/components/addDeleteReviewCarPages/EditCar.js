@@ -90,7 +90,11 @@ const EditCar = ({car:{car,isLoading},getCar,editCar,match}) => {
         <div>
             <AppNavbar/>
             <Container className="mt-4 p-3">
-                <h4 className="text-center">Edit car</h4>
+                <Row>
+                    <Col xs="12" md={{ size: '8', offset:2 }}>
+                        <h4 className="text-center">Izmena</h4>
+                    </Col>
+                </Row>
                 <Form onSubmit={onSubmit}>
                     <FormGroup>
                         <Row><Col xs="2"></Col><Col xs="8"><Input type="text" name="marka" id="marka" placeholder="Marka" value={marka} onChange={onChange} className="m-3"/></Col><Col xs="2"></Col></Row>
@@ -101,7 +105,6 @@ const EditCar = ({car:{car,isLoading},getCar,editCar,match}) => {
                         <Row><Col xs="2"></Col><Col xs="8"><Input type="text" name="gorivo" id="gorivo" placeholder="Gorivo" value={gorivo} onChange={onChange} className="m-3"/></Col><Col xs="2"></Col></Row>
                         <Row><Col xs="2"></Col><Col xs="8"><Input type="number" name="kubikaza" id="kubikaza" placeholder="Kubikaza" value={kubikaza} onChange={onChange} className="m-3"/></Col><Col xs="2"></Col></Row>
                         <Row><Col xs="2"></Col><Col xs="8"><Input type="number" name="snagaMotora" id="snagaMotora" placeholder="Snaga motora" value={snagaMotora} onChange={onChange} className="m-3"/></Col><Col xs="2"></Col></Row>
-                        <Row><Col xs="2"></Col><Col xs="8"><Input type="text" name="slika" id="slika" placeholder="Slika" value={slika} onChange={onChange} className="m-3"/></Col><Col xs="2"></Col></Row>
                         <Row><Col xs="2"></Col><Col xs="8"><Input type="number" name="cena" id="cena" placeholder="Cena" value={cena} onChange={onChange} className="m-3"/></Col><Col xs="2"></Col></Row>
                         <Row><Col xs="2"></Col><Col xs="8"><Button color="danger" block className="m-3">Edit</Button></Col><Col xs="2"></Col></Row>
                     </FormGroup>

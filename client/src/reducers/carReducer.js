@@ -17,7 +17,8 @@ export default function(state=initialState,action)
             return{
                 ...state,
                 cars:action.payload,
-                isLoading:false
+                isLoading:false,
+                car:carUtil
             }
         case GET_MYCARS:
             return{
@@ -30,7 +31,8 @@ export default function(state=initialState,action)
             return{
                 ...state,
                 lastCars:action.payload,
-                isLoading:false
+                isLoading:false,
+                car:carUtil
             }
         case ADD_CAR:
             return{

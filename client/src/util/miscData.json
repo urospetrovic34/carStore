@@ -1,0 +1,440 @@
+[
+    {
+      "godista":[
+        {
+          "value": 2021
+        },
+        {
+          "value": 2020
+        },
+        {
+          "value": 2019
+        },
+        {
+          "value": 2018
+        },
+        {
+          "value": 2017
+        },
+        {
+          "value": 2016
+        },
+        {
+          "value": 2015
+        },
+        {
+          "value": 2014
+        },
+        {
+          "value": 2013
+        },
+        {
+          "value": 2012
+        },
+        {
+          "value": 2011
+        },
+        {
+          "value": 2010
+        },
+        {
+          "value": 2009
+        },
+        {
+          "value": 2008
+        },
+        {
+          "value": 2007
+        },
+        {
+          "value": 2006
+        },
+        {
+          "value": 2005
+        },
+        {
+          "value": 2004
+        },
+        {
+          "value": 2003
+        },
+        {
+          "value": 2002
+        },
+        {
+          "value": 2001
+        },
+        {
+          "value": 2000
+        },
+        {
+          "value": 1999
+        },
+        {
+          "value": 1998
+        },
+        {
+          "value": 1997
+        },
+        {
+          "value": 1996
+        },
+        {
+          "value": 1995
+        },
+        {
+          "value": 1994
+        },
+        {
+          "value": 1993
+        },
+        {
+          "value": 1992
+        },
+        {
+          "value": 1991
+        },
+        {
+          "value": 1990
+        },
+        {
+          "value": 1989
+        },
+        {
+          "value": 1988
+        },
+        {
+          "value": 1987
+        },
+        {
+          "value": 1986
+        },
+        {
+          "value": 1985
+        },
+        {
+          "value": 1984
+        },
+        {
+          "value": 1983
+        },
+        {
+          "value": 1982
+        },
+        {
+          "value": 1981
+        },
+        {
+          "value": 1980
+        },
+        {
+          "value": 1979
+        },
+        {
+          "value": 1978
+        },
+        {
+          "value": 1977
+        },
+        {
+          "value": 1976
+        },
+        {
+          "value": 1975
+        },
+        {
+          "value": 1974
+        },
+        {
+          "value": 1973
+        },
+        {
+          "value": 1972
+        },
+        {
+          "value": 1971
+        }
+      ]
+    },
+    {
+      "karoserije":[
+        {
+          "value": "Limuzina"
+        },
+        {
+          "value": "Hečbek"
+        },
+        {
+          "value": "Karavan"
+        },
+        {
+          "value": "Kupe"
+        },
+        {
+          "value": "Kabriolet"
+        },
+        {
+          "value": "Džip"
+        },
+        {
+          "value": "Pikap"
+        },
+        {
+          "value": "Minivan"
+        }
+      ]
+    },
+    {
+      "goriva":[
+        {
+          "value": "Benzin"
+        },
+        {
+          "value": "Dizel"
+        },
+        {
+          "value": "Benzin/Gas"
+        },
+        {
+          "value": "Električni"
+        },
+        {
+          "value": "Hibridni"
+        }
+      ]
+    },
+    {
+      "pogoni":[
+        {
+          "value": "Prednji"
+        },
+        {
+          "value": "Zadnji"
+        },
+        {
+          "value": "4x4"
+        }
+      ]
+    },
+    {
+      "emisionaKlaseMotora":[
+        {
+          "value": "Euro 1"
+        },
+        {
+          "value": "Euro 2"
+        },
+        {
+          "value": "Euro 3"
+        },
+        {
+          "value": "Euro 4"
+        },
+        {
+          "value": "Euro 5"
+        },
+        {
+          "value": "Euro 6"
+        }
+      ]
+    },
+    {
+      "menjaci":[
+        {
+          "value": "Manuelni"
+        },
+        {
+          "value": "Poluautomatski"
+        },
+        {
+          "value": "Automatski"
+        }
+      ]
+    },
+    {
+      "brojeviVrata":[
+        {
+          "value": "2/3"
+        },
+        {
+          "value": "4/5"
+        }
+      ]
+    },
+    {
+      "brojeviSedista":[
+        {
+          "value": "2"
+        },
+        {
+          "value": "3"
+        },
+        {
+          "value": "4"
+        },
+        {
+          "value": "5"
+        },
+        {
+          "value": "6"
+        },
+        {
+          "value": "7"
+        },
+        {
+          "value": "8"
+        },
+        {
+          "value": "9"
+        }
+      ]
+    },
+    {
+      "straneVolana":[
+        {
+          "value": "Leva"
+        },
+        {
+          "value": "Desna"
+        }
+      ]
+    },
+    {
+      "klime":[
+        {
+          "value": "Ima"
+        },
+        {
+          "value": "Nema"
+        }
+      ]
+    },
+    {
+      "boje":[
+        {
+          "value": "Srebrna"
+        },
+        {
+          "value": "Crna"
+        },
+        {
+          "value": "Siva"
+        },
+        {
+          "value": "Bela"
+        },
+        {
+          "value": "Plava"
+        },
+        {
+          "value": "Crvena"
+        },
+        {
+          "value": "Braon"
+        },
+        {
+          "value": "Zelena"
+        },
+        {
+          "value": "Žuta"
+        },
+        {
+          "value": "Narandžasta"
+        },
+        {
+          "value": "Ljubičasta"
+        }
+      ]
+    },
+    {
+      "ostecenja":[
+        {
+          "value": "Ima"
+        },
+        {
+          "value": "Nema"
+        }
+      ]
+    },
+    {
+      "zamene":[
+        {
+          "zamena": "Bez zamene",
+          "type":"hidden"
+        },
+        {
+          "zamena": "Zamena za jeftinije",
+          "type":"textarea"
+        },
+        {
+          "zamena": "U istoj ceni",
+          "type":"textarea"
+        },
+        {
+          "zamena": "Zamena za skuplje",
+          "type":"textarea"
+        },
+        {
+          "zamena": "Sa zamenom",
+          "type":"textarea"
+        }
+      ]
+    },
+    {
+      "poreklaVozila":[
+        {
+          "porekloVozila": "Domaće tablice",
+          "readOnly":true
+        },
+        {
+          "porekloVozila": "Na ime kupca",
+          "readOnly":false
+        },
+        {
+          "porekloVozila": "Strane tablice",
+          "readOnly":false
+        }
+      ]
+    },
+    {
+      "drzave":[
+        {
+          "drzava": "Domaće tablice"
+        },
+        {
+          "drzava": "Na ime kupca"
+        },
+        {
+          "drzava": "Strane tablice"
+        }
+      ]
+    },
+    {
+      "sortovi":[
+        {
+          "sort": "cena rastuće",
+          "label": "Cena rastuće"
+        },
+        {
+          "sort": "cena opadajuće",
+          "label": "Cena opadajuće"
+        },
+        {
+          "sort": "kilometraza rastuće",
+          "label": "Kilometraža rastuće"
+        },
+        {
+          "sort": "kilometraza opadajuće",
+          "label": "Kilometraža opadajuće"
+        },
+        {
+          "sort": "godiste rastuće",
+          "label": "Godište rastuće"
+        },
+        {
+          "sort": "godiste opadajuće",
+          "label": "Godište opadajuće"
+        }
+      ]
+    }
+]
