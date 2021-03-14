@@ -240,8 +240,8 @@ const CarSchema = new Schema({
         required:false
     },
     cena:{
-        type:String,
-        default:'Po dogovoru',
+        type:Number,
+        default:0
     },
     fiksnaCena:{
         type:String,
@@ -268,6 +268,10 @@ const CarSchema = new Schema({
         required: false
     },
     dodatniOpis:{
+        type:String,
+        required:false
+    },
+    tipCene:{
         type:String,
         required:false
     },

@@ -19,6 +19,7 @@ router.get('/', async (req,res) => {
         const marka = req.query.marka
         const model = req.query.model
         const karoserija = req.query.karoserija
+        const maxKilometraza = req.query.maxKilometraza
 
         const stranaSize = 9
         const strana = Number(req.query.brojStrane) || 1
@@ -38,8 +39,17 @@ router.get('/', async (req,res) => {
 
         const count = await Car.countDocuments(query)
         const cars = await Car.find(query).sort([[orderBy,sortBy]]).limit(stranaSize).skip(stranaSize * (strana - 1))
+        const cene = await Car.find(query).select('cena -_id')
+        const kilometraza = await Car.find().select('kilometraza -_id').sort({"kilometraza":-1}).limit(1)
+        const maxGodina = await Car.find().select('godiste -_id').sort({"godiste":-1}).limit(1)
+        const minGodina = await Car.find().select('godiste -_id').sort({"godiste":1}).limit(1)
+        const maxCena = await Car.find().select('cena -_id').sort({"cena":-1}).limit(1)
+        const minCena = await Car.find().select('cena -_id').sort({"cena":1}).limit(1)
+        const maxKubikaza = await Car.find().select('kubikaza -_id').sort({"kubikaza":-1}).limit(1)
+        const minKubikaza = await Car.find().select('kubikaza -_id').sort({"kubikaza":1}).limit(1)
+        const ucitano = true
 
-        res.json({cars,strana,strane: Math.ceil(count/stranaSize)})
+        res.json({cars,cene,kilometraza,maxGodina,minGodina,maxCena,ucitano,minCena,maxKubikaza,minKubikaza,strana,strane: Math.ceil(count/stranaSize)})
     } 
     catch (error) 
     {
@@ -165,7 +175,7 @@ router.post('/', auth, upload.array('photoFiles',8), async (req,res) => {
             stranaVolana:req.body.stranaVolana,
             klima:req.body.klima,
             boja:req.body.boja,
-            //registrovanDo:req.body.registrovanDo,
+            registrovanDo:req.body.registrovanDo,
             ostecenje:req.body.ostecenje,
             zamena:req.body.zamena,
             porekloVozila:req.body.porekloVozila,
@@ -226,10 +236,6 @@ router.post('/', auth, upload.array('photoFiles',8), async (req,res) => {
         console.error(error.message)
         res.status(500).send('Serverska greska')
     }
-
-    //console.log(req.body)
-    //console.log(req.files)
-
 })
 
 router.get('/:id', async (req,res) => {

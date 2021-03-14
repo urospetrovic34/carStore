@@ -1,12 +1,13 @@
-import React, {useEffect,useState,useRef} from 'react'
-import Select from 'react-select'
-import {Container,Form,FormGroup,Row,Col,Input,Label,Card,Button} from 'reactstrap'
+import React, {useEffect,useState} from 'react'
 import years from '../../util/miscData.json'
 import cars from '../../util/carData.json'
 import {connect} from 'react-redux'
 import {addCar} from '../../actions/carActions'
 import PropTypes from 'prop-types'
 import AppNavbar from '../layout/AppNavbar'
+import {Container,Grid,TextField,Select,FormControl,MenuItem,InputLabel,makeStyles,FormGroup,FormControlLabel,Checkbox,RadioGroup,Radio,Button,Paper,CardMedia,Fade,GridList,GridListTile} from '@material-ui/core'
+import DateFnsUtils from '@date-io/date-fns'
+import {MuiPickersUtilsProvider,KeyboardDatePicker} from '@material-ui/pickers'
 import {withRouter} from 'react-router-dom'
 
 const state = {
@@ -29,12 +30,11 @@ const state = {
     type:'hidden',
     zamena:'',
     ostecenje:'',
-    registrovanDo:null,
+    registrovanDo:'',
     zemljaUvoza:'Srbija',
     snaga:'',
     readOnly:true,
     brojSasije:'',
-    porekloVozila:'',
     slike:[],
     airbag:'',
     alarm:'',
@@ -80,7 +80,9 @@ const state = {
     telefon:'',
     mesto:'',
     msg:null,
-    preview:[],
+    preview:["../carPlaceholder.png","../carPlaceholder.png","../carPlaceholder.png","../carPlaceholder.png","../carPlaceholder.png","../carPlaceholder.png","../carPlaceholder.png","../carPlaceholder.png"],
+    porekloVozila:'',
+    tipCene:'cenaPrava'
 }
 
 const AddCar = ({addCar}) => {
@@ -89,81 +91,157 @@ const AddCar = ({addCar}) => {
     const [marka,setMarka] = useState(null)
     const [model,setModel] = useState(null)
     const [modelList,setModelList] = useState([])
+    const [godineList,setGodineList] = useState([])
+    const [datumReg,setDatumReg] = useState(new Date())
+    const [visibility,setVisibility] = useState("none")
+    const [visit,setVisit] = useState(false)
+    const [counterVisit,setCounterVisit] = useState(true)
+    const [disabledPick,setDisabledPick] = useState(true)
+    const [disabledCena,setDisabledCena] = useState(false)
+    const [radioVal,setRadioVal] = useState("cenaPrava")
 
-    const onMarkaChange = (e) => {
-        setMarka(e)
-        setModelList(e.models)
-        setModel(null)
-        setData({...data,marka:e.brand})
-    }
+    const useStyles = makeStyles((theme) => ({
+        paddingRight34:{
+            paddingRight:34
+        },
+        paperWide:{
+            width:"100%",
+            height: theme.spacing(46),
+            paddingTop:15
+        }
+    }))
 
-    const onModelChange = (e) => {
-        setModel(e)
-        setData({...data,model:e.name})
-    }
+    const classes = useStyles()
 
-    const onChange = (e) => {
-        setData({...data,[e.target.name]:e.target.value})
-    }
-
-    const onChangeTablice = (val,action) => {
-        console.log(val,action)
-        setData({...data,porekloVozila:val.porekloVozila})
-        setData({...data,readOnly:val.readOnly})
-    }
-
-    const onSelectChange = (val,action) => {
-        setData({...data,[action.name]:val.value})
-    }
-
-    const onSelectChangeZamena = (val,action) => {
-        setData({...data,[action.name]:val.zamena,type:val.type})
-    }
-
-    const onCheckChange = (e) => {
-        if(e.target.checked) 
+    const handleCheckboxChange = (val,action) => {
+        if(action===true)
         {
-            setData({...data,[e.target.id]:e.target.name})
+            setData({...data,[val.target.id]:val.target.name})
         }
         else
         {
-            setData({...data,[e.target.id]:null})
+            setData({...data,[val.target.id]:""})
         }
     }
 
-    const onReset = () => {
-        setData({...data,slika:[]})
+    const handleSelectMarkaChange = (val,action) => {
+        setMarka(action.props.id)
+        setModelList(action.props.value)
+        setModel(null)
+        setData({...data,marka:action.props.id,model:"",godiste:""})
+        if(action.props.id === "")
+        {
+            setModelList([])
+            setGodineList([])
+        }
     }
 
-    const onChangeDate = (val) => {
-        setData({...data,datum:val.target.value})
+    const handleSelectModelChange = (val,action) => {
+        setModel(action.props.id)
+        setGodineList(action.props.value)
+        setData({...data,model:action.props.id,godiste:""})
+        if(action.props.id === "")
+        {
+            setGodineList([])
+        }
     }
 
-    const onChangeImage = (e) => {
+    const handleSelectChange = (val,action) => {
+        setData({...data,[action.props.id]:action.props.value})
+    }
+
+    const handleTextFieldChange = (event) => {
+        setData({...data,[event.target.name]:event.target.value})
+    }
+
+    const handleDatePickerChange = (event,action) => {
+        setDatumReg(event)
+        setData({...data,registrovanDo:action})
+    }
+
+    const handleSelectZamenaChange = (event) => {
+        setData({...data,zamena:event.target.value})
+        setVisibility("visible")
+        setVisit(true)
+        setCounterVisit(false)
+        if(event.target.value==="")
+        {
+            setVisibility("none")  
+            setVisit(false)     
+            setCounterVisit(true)   
+        }
+    }
+
+    const handleSelectPorekloVozilaChange = (event) => {
+        setData({...data,porekloVozila:event.target.value})
+        if(event.target.value === "Domaće tablice" || event.target.value === "")
+        {
+            setDisabledPick(true)
+        }
+        else
+        {
+            setDisabledPick(false)     
+        }
+    }
+
+    const handleRadioGroupChange = (event,value) => {
+        setData({...data,tipCene:value})
+        setRadioVal(value)
+        if(value === "poDogovoru" || value === "naUpit")
+        {
+            setDisabledCena(true)
+        }
+        else
+        {
+            setDisabledCena(false)     
+        }
+    }
+
+    const handleFileChange = (event,action) => {
+
+        if(event.target.files.length===0)
+        {
+            for(let i=0;i<8;i++)
+            {
+                data.preview[i]="../carPlaceholder.png"
+            }
+        }
 
         let ar = []
-        let ar2 = []
+        let ar2 = ["../carPlaceholder.png","../carPlaceholder.png","../carPlaceholder.png","../carPlaceholder.png","../carPlaceholder.png","../carPlaceholder.png","../carPlaceholder.png","../carPlaceholder.png"]
 
-        for(let i=0;i<e.target.files.length;i++)
+        for(let i=0;i<event.target.files.length;i++)
         {
-            ar.push(e.target.files[i])
-            let f = URL.createObjectURL(e.target.files[i])
-            ar2.push(f)
+            ar.push(event.target.files[i])
+
+            let f = URL.createObjectURL(event.target.files[i])
+
+            ar2.splice(i,1,f)
+            
+            for(let j=0;j<8;j++)
+            {
+                if(ar2[j]==="../carPlaceholder.png")
+                {
+                    data.preview[j]="../carPlaceholder.png"
+                }
+                else
+                {
+                    data.preview[j]=ar2[j]
+                }
+            }
         }
         
-        if(ar.length>8)
+        if(event.target.files.length>8)
         {
-            e.preventDefault()
+            event.preventDefault()
             alert('Maksimalan broj slika je 8')
             return
         }
 
-        setData({...data,slike:ar,preview:ar2})
+        setData({...data,slike:ar})
     }
 
-    const onSubmit = (e) => {
-
-        e.preventDefault()
+    const handleButtonSendClick = () => {
 
         const formData = new FormData()
         
@@ -192,9 +270,8 @@ const AddCar = ({addCar}) => {
         formData.append('registrovanDo',data.registrovanDo)
         formData.append('ostecenje',data.ostecenje)
         formData.append('zamena',data.zamena)
-        formData.append('porekloVozila',data.porekloVozila)
+        formData.append('poreklo',data.poreklo)
         formData.append('zemljaUvoza',data.zemljaUvoza)
-        formData.append('brojSasije',data.brojSasije)
         formData.append('airbag',data.airbag)
         formData.append('abs',data.abs)
         formData.append('alarm',data.alarm)
@@ -228,6 +305,7 @@ const AddCar = ({addCar}) => {
         formData.append('oldtimer',data.oldtimer)
         formData.append('taxi',data.taxi)
         formData.append('tuning',data.tuning)
+        formData.append('tipCene',data.tipCene)
         formData.append('cena',data.cena)
         formData.append('fiksnaCena',data.fiksnaCena)
         formData.append('licitiranje',data.licitiranje)
@@ -241,514 +319,668 @@ const AddCar = ({addCar}) => {
         addCar(formData)
     }
 
-    //const previousProps = useRef()
+    console.log(data.registrovanDo)
 
-    useEffect(() => {
-    //    {/*const {error} = this.props
-    // 
-    //    if(error !== previousProps.error)
-    //    {
-    //        if(error.id === 'REGISTER_FAIL')
-    //        {
-    //            this.setState({msg:error.msg.msg})
-    //        }
-    //        else
-    //        {
-    //            this.setState({msg:null})
-    //        }
-    //    }*/}
-    })
-        
-    console.log(data)
-
+    //Kod Selecta svi MenuItem clanovi trebaju da imaju id, makar bio isti
     return (
-        <div className="paternBackground">
-        <AppNavbar/>
-        <Container className="bg-white p-3">
-            <Row className="pt-4 pl-1">
-                <Col xs="12" md={{ size: '8', offset:2 }}>
-                    <h4 className="mr-auto">Dodavanje</h4>
-                </Col>
-            </Row>
-            <Row>
-                <Col xs="12">
-                <Form onSubmit={onSubmit} encType="multipart/form-data">
-                <FormGroup>
-                    <Row className="mt-3 pl-1">
-                        <Col xs="12" md={{ size: '8', offset:2 }}>
-                            <h5>Slike</h5>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1">
-                        <Col xs="12" md={{ size: '8', offset:2 }}>
-                            <Card className="p-5">
-                                <Row>
-                                    {data.preview.map((value, index)=>(
-                                        <Col xs="3" className="preview p-1"><img src={value} alt={value}/></Col>
+        <div className="bg-primary">
+            <AppNavbar/>
+            <Container fixed>
+            <Container maxWidth="md" className="bg-white">
+                <Grid container spacing={2}>
+                    <Grid item xs={12} className="mt-3">
+                        <h4>Dodavanje</h4>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <h5>Slike</h5>
+                        <p>Do 8 slika</p>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Grid container spacing={1} maxWidth="md" className="bg-white pl-1 pr-1">
+                            <Paper variant="outlined" className={classes.paperWide}>
+                                <GridList cols={4} direction="row-reverse">
+                                    {data.preview.map((value,key)=>(
+                                        <GridListTile key={key} cols={1} className="gridListImg">
+                                            <img src={value} alt={value} />
+                                        </GridListTile>
                                     ))}
-                                </Row>
-                            </Card>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3">
-                        <Col xs="12" md={{ size: '8', offset:2 }}>
-                            <Input type="file" name="slike" id="slike" placeholder="Slika" label="Dodaj" onClick={onReset} onChange={onChangeImage} multiple/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3 pl-1">
-                        <Col xs="12" md={{ size: '8', offset:2 }}>
-                            <h5>Marka i model</h5>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1">
-                        <Col xs="12" md={{ size: '4', offset:2 }} className="mt-1">
-                            <Select placeholder="Marka" value={marka} options={cars} onChange={onMarkaChange} getOptionLabel={e => e.brand} getOptionValue={e => e.brand}/>
-                        </Col>
-                        <Col xs="12" md="4" className="mt-1">
-                            <Select placeholder="Model" value={model} options={modelList} onChange={onModelChange} getOptionLabel={e => e.name} getOptionValue={e => e.name}/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3 pl-1">
-                        <Col xs="12" md={{ size: '8', offset:2 }}>
-                            <h5>Osnovne informacije</h5>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1">
-                        <Col xs="12" md={{ size: '4', offset:2 }} className="mt-1">
-                            <Select placeholder="Godište" name="godiste" onChange={onSelectChange} value={data.godiste.godiste} options={years[0].godista} getOptionLabel={e => e.value} getOptionValue={e => e.value}/>
-                        </Col>
-                        <Col xs="12" md="4" className="mt-1">
-                            <Select placeholder="Karoserija" name="karoserija" onChange={onSelectChange} value={data.karoserija.karoserija} options={years[1].karoserije} getOptionLabel={e => e.value} getOptionValue={e => e.value}/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3">
-                        <Col xs="12" md={{ size: '4', offset:2 }} className="mt-1">
-                            <Select placeholder="Gorivo" name="gorivo" onChange={onSelectChange} value={data.gorivo.gorivo} options={years[2].goriva} getOptionLabel={e => e.value} getOptionValue={e => e.value}/>
-                        </Col>
-                        <Col xs="12" md="4" className="mt-1">
-                            <Input type="text" name="obelezje" id="obelezje" placeholder="Obelezje" onChange={onChange}/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3 pl-1">
-                        <Col xs="12" md={{ size: '8', offset:2 }}>
-                            <h5>Karakteristike</h5>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1">
-                        <Col xs="12" md={{ size: '4', offset:2 }} className="mt-1">
-                            <Input type="number" name="kubikaza" id="kubikaza" placeholder="Kubikaza" onChange={onChange}/>
-                        </Col>
-                        <Col xs="12" md="4" className="mt-1">
-                            <Input type="number" name="snaga" id="snaga" placeholder="Snaga (kW)" onChange={onChange}/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3">
-                        <Col xs="12" md={{ size: '4', offset:2 }} className="mt-1">
-                            <Input type="number" name="kilometraza" id="kilometraza" placeholder="Kilometraza" onChange={onChange}/>
-                        </Col>
-                        <Col xs="12" md="4" className="mt-1">
-                            <Select placeholder="Pogon" name="pogon" onChange={onSelectChange} value={data.pogon.pogon} options={years[3].pogoni} getOptionLabel={e => e.value} getOptionValue={e => e.value}/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3">
-                        <Col xs="12" md={{ size: '4', offset:2 }} className="mt-1">
-                            <Select placeholder="Emisiona klasa motora" name="emisionaKlasaMotora" onChange={onSelectChange} value={data.emisionaKlasaMotora.emisionaKlasaMotora} options={years[4].emisionaKlaseMotora} getOptionLabel={e => e.value} getOptionValue={e => e.value}/>
-                        </Col>
-                        <Col xs="12" md="4" className="mt-1">
-                            <Select placeholder="Menjac" name="menjac" onChange={onSelectChange} value={data.menjac.menjac} options={years[5].menjaci} getOptionLabel={e => e.value} getOptionValue={e => e.value}/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3">
-                        <Col xs="12" md={{ size: '4', offset:2 }} className="mt-1">
-                            <Select placeholder="Broj vrata" name="brojVrata" onChange={onSelectChange} value={data.brojVrata.brojVrata} options={years[6].brojeviVrata} getOptionLabel={e => e.value} getOptionValue={e => e.value}/>
-                        </Col>
-                        <Col xs="12" md="4" className="mt-1">
-                            <Select placeholder="Broj sedišta" name="brojSedista" onChange={onSelectChange} value={data.brojSedista.brojSedista} options={years[7].brojeviSedista} getOptionLabel={e => e.value} getOptionValue={e => e.value}/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3">
-                        <Col xs="12" md={{ size: '4', offset:2 }} className="mt-1">
-                            <Select placeholder="Strana volana" name="stranaVolana" onChange={onSelectChange} value={data.stranaVolana.stranaVolana} options={years[8].straneVolana} getOptionLabel={e => e.value} getOptionValue={e => e.value}/>
-                        </Col>
-                        <Col xs="12" md="4" className="mt-1">
-                            <Select placeholder="Klima" name="klima" onChange={onSelectChange} value={data.klima.klima} options={years[9].klime} getOptionLabel={e => e.value} getOptionValue={e => e.value}/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3">
-                        <Col xs="12" md={{ size: '4', offset:2 }} className="mt-1">
-                            <Select placeholder="Boja" name="boja" onChange={onSelectChange} value={data.boja.boja} options={years[10].boje} getOptionLabel={e => e.value} getOptionValue={e => e.value}/>
-                        </Col>
-                        <Col xs="12" md="4" className="mt-1">
-                            <Input type="date" name="registrovanDo" placeholder="Registrovan do" id="registrovanDo" onChange={onChangeDate}/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3">
-                        <Col xs="12" md={{ size: '4', offset:2 }} className="mt-1">
-                            <Select placeholder="Oštećenje" name="ostecenje" onChange={onSelectChange} value={data.ostecenje.ostecenje} options={years[11].ostecenja} getOptionLabel={e => e.value} getOptionValue={e => e.value}/>
-                        </Col>
-                        <Col xs="12" md="4" className="mt-1">
-                            <Select placeholder="Zamena" name="zamena" onChange={onSelectChangeZamena} value={data.zamena.zamena} options={years[12].zamene} getOptionLabel={e => e.zamena} getOptionValue={e => e.zamena}/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3">
-                        <Col xs="12" md={{ size: '8', offset:2 }} className="mt-1">
-                            <Input className="textarea" name="opisZamene" type={data.type} rows="4" placeholder="Dodatni opis zamene" onChange={onChange}/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3 pl-1">
-                        <Col xs="12" md={{ size: '8', offset:2 }}>
-                            <h5>Informacije o vlasništvu</h5>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1">
-                        <Col xs="12" md={{ size: '4', offset:2 }} className="mt-1">
-                            <Select placeholder="Poreklo vozila" name="porekloVozila" onChange={onChangeTablice} value={data.porekloVozila.porekloVozila} options={years[13].poreklaVozila} getOptionLabel={e => e.porekloVozila} getOptionValue={e => e.porekloVozila}/>
-                        </Col>
-                        <Col xs="12" md="4" className="mt-1">
-                            <Input type="text" name="zemljaUvoza" id="zemljaUvoza" placeholder="Zemlja uvoza" onChange={onChange} readOnly={data.readOnly}/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3">
-                        <Col xs="12" md={{ size: '8', offset:2 }} className="mt-1">
-                            <Input type="text" name="brojSasije" id="brojSasije" placeholder="Broj šasije" onChange={onChange}/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3 pl-1">
-                        <Col xs="12" md={{ size: '8', offset:2 }}>
-                            <h5>Sigurnost</h5>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1 pl-1">
-                        <Col xs="12" md={{ size: '3', offset:2 }} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Airbag" id="airbag"/>Airbag
-                                </Label>
+                                </GridList>
+                            </Paper>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField variant="outlined" id="fileInput" type="file" inputProps={{ multiple: true }} onChange={handleFileChange} hidden/>
+                        <label htmlFor="fileInput">
+                            <Button variant="outlined" component="span">
+                                Dodaj slike
+                            </Button>
+                        </label>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <h5>Marka i model</h5>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Marka</InputLabel>
+                            <Select label="Marka" defaultValue = "" onChange={handleSelectMarkaChange}>
+                                <MenuItem value="" id="">Poništi</MenuItem>
+                                {Object.values(cars).map((car)=>(
+                                    <MenuItem value={car.models} id={car.brand}>
+                                        {car.brand}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Model</InputLabel>
+                            <Select label="Model" defaultValue = "" onChange={handleSelectModelChange}>
+                                <MenuItem value="" id="">Poništi</MenuItem>
+                                {modelList.map((model)=>(
+                                    <MenuItem value={model.godine} id={model.name}>
+                                        {model.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <h5>Osnovne informacije</h5>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Godište</InputLabel>
+                            <Select label="Godište" defaultValue = "" onChange={handleSelectChange}>
+                                <MenuItem value="" id="godiste">Poništi</MenuItem>
+                                {godineList.sort((a, b) => b - a).map((godina)=>(
+                                    <MenuItem value={godina} id="godiste">
+                                        {godina}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Karoserija</InputLabel>
+                            <Select label="Karoserija" defaultValue = "" onChange={handleSelectChange}>
+                                <MenuItem value="" id="karoserija">Poništi</MenuItem>
+                                {Object.values(years[1].karoserije).map((karoserija)=>(
+                                    <MenuItem value={karoserija.value} id="karoserija">
+                                        {karoserija.value}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Gorivo</InputLabel>
+                            <Select label="Gorivo" defaultValue = "" onChange={handleSelectChange}>
+                                <MenuItem value="" id="gorivo">Poništi</MenuItem>
+                                {Object.values(years[2].goriva).map((gorivo)=>(
+                                    <MenuItem value={gorivo.value} id="gorivo">
+                                        {gorivo.value}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <TextField label="Obeležje" name="obelezje" id="obelezje" variant="outlined" onChange={handleTextFieldChange}/>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <h5>Karakteristike</h5>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <TextField label="Kubikaža" name="kubikaza" id="kubikaza" variant="outlined" type="number" onChange={handleTextFieldChange}/>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <TextField label="Snaga (kW)" name="snaga" id="snaga" variant="outlined" type="number" onChange={handleTextFieldChange}/>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <TextField label="Kilometraža" name="kilometraza" id="kilometraza" variant="outlined" type="number" onChange={handleTextFieldChange}/>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Pogon</InputLabel>
+                            <Select label="Pogon" defaultValue = "" onChange={handleSelectChange}>
+                                <MenuItem value="" id="pogon">Poništi</MenuItem>
+                                {Object.values(years[3].pogoni).map((pogon)=>(
+                                    <MenuItem value={pogon.value} id="pogon">
+                                        {pogon.value}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Emisiona klasa motora</InputLabel>
+                            <Select label="Emisiona klasa motora" defaultValue = "" onChange={handleSelectChange}>
+                                <MenuItem value="" id="emisionaKlasaMotora">Poništi</MenuItem>
+                                {Object.values(years[4].emisionaKlaseMotora).map((motor)=>(
+                                    <MenuItem value={motor.value} id="emisionaKlasaMotora">
+                                        {motor.value}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Menjač</InputLabel>
+                            <Select label="Menjač" defaultValue = "" onChange={handleSelectChange}>
+                                <MenuItem value="" id="menjac">Poništi</MenuItem>
+                                {Object.values(years[5].menjaci).map((menjac)=>(
+                                    <MenuItem value={menjac.value} id="menjac">
+                                        {menjac.value}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Broj vrata</InputLabel>
+                            <Select label="Broj vrata" defaultValue = "" onChange={handleSelectChange}>
+                                <MenuItem value="" id="brojVrata">Poništi</MenuItem>
+                                {Object.values(years[6].brojeviVrata).map((brojVrata)=>(
+                                    <MenuItem value={brojVrata.value} id="brojVrata">
+                                        {brojVrata.value}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Broj sedišta</InputLabel>
+                            <Select label="Broj sedišta" defaultValue = "" onChange={handleSelectChange}>
+                                <MenuItem value="" id="brojSedista">Poništi</MenuItem>
+                                {Object.values(years[7].brojeviSedista).map((brojSedista)=>(
+                                    <MenuItem value={brojSedista.value} id="brojSedista">
+                                        {brojSedista.value}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Strana volana</InputLabel>
+                            <Select label="Strana volana" defaultValue = "" onChange={handleSelectChange}>
+                                <MenuItem value="" id="stranaVolana">Poništi</MenuItem>
+                                {Object.values(years[8].straneVolana).map((stranaVolana)=>(
+                                    <MenuItem value={stranaVolana.value} id="stranaVolana">
+                                        {stranaVolana.value}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Klima</InputLabel>
+                            <Select label="Klima" defaultValue = "" onChange={handleSelectChange}>
+                                <MenuItem value="" id="klima">Poništi</MenuItem>
+                                {Object.values(years[9].klime).map((klima)=>(
+                                    <MenuItem value={klima.value} id="klima">
+                                        {klima.value}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Boja</InputLabel>
+                            <Select label="Boja" defaultValue = "" onChange={handleSelectChange}>
+                                <MenuItem value="" id="boja">Poništi</MenuItem>
+                                {Object.values(years[10].boje).map((boja)=>(
+                                    <MenuItem value={boja.value} id="boja">
+                                        {boja.value}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <Grid item xs={6}>
+                            <FormControl variant="outlined" fullWidth>      
+                                <KeyboardDatePicker format="yyyy-MM-dd" value={datumReg} label="Registracija do" inputVariant="outlined" onChange={handleDatePickerChange}/>     
+                            </FormControl>
+                        </Grid>
+                    </MuiPickersUtilsProvider>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Oštećenje</InputLabel>
+                            <Select label="Oštećenje" defaultValue = "" onChange={handleSelectChange}>
+                                <MenuItem value="" id="ostecenje">Poništi</MenuItem>
+                                {Object.values(years[11].ostecenja).map((ostecenje)=>(
+                                    <MenuItem value={ostecenje.value} id="ostecenje">
+                                        {ostecenje.value}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Zamena</InputLabel>
+                            <Select label="Zamena" defaultValue = "" onChange={handleSelectZamenaChange}>
+                                <MenuItem value="" id="zamena">Poništi</MenuItem>
+                                {Object.values(years[12].zamene).map((zamena)=>(
+                                    <MenuItem value={zamena.zamena} id="zamena">
+                                        {zamena.zamena}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    {
+                        visibility === "none" ? (
+                            
+                            <Fade in={counterVisit} timeout={1000}>
+                                <div>
+
+                                </div>
+                            </Fade>
+                        ) : (
+                            <Grid item xs={12}>
+                                <Fade in={visit} timeout={1000}>
+                                    <FormControl variant="outlined" fullWidth>
+                                        <TextField label="Opis zamene" variant="outlined" name="opisZamene" id="opisZamene" rows={7} InputLabelProps={{shrink: true}} onChange={handleTextFieldChange} multiline/>
+                                    </FormControl>
+                                </Fade>
+                            </Grid>
+                        )
+                    }
+                    <Grid item xs={12}>
+                        <h5>Informacije o vlasništvu</h5>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Poreklo vozila</InputLabel>
+                            <Select label="Poreklo vozila" defaultValue = "" onChange={handleSelectPorekloVozilaChange}>
+                                <MenuItem value="" id="porekloVozila">Poništi</MenuItem>
+                                {Object.values(years[13].poreklaVozila).map((porekloVozila)=>(
+                                    <MenuItem value={porekloVozila.value} id="porekloVozila">
+                                        {porekloVozila.value}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>Zemlja uvoza</InputLabel>
+                            <Select label="Zemlja uvoza" defaultValue = "" disabled={disabledPick}>
+                                <MenuItem value="">Poništi</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <h5>Sigurnost</h5>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row fullWidth>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Airbag" id="airbag"/>}
+                                label="Airbag"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="ABS" id="abs"/>}
+                                label="ABS"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Alarm" id="alarm"/>}
+                                label="Alarm"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Blokada motora" id="blokadaMotora"/>}
+                                label="Blokada motora"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Kodirani ključ" id="kodiraniKljuc"/>}
+                                label="Kodirani ključ"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Centralno zaključavanje" id="centralnoZakljucavanje"/>}
+                                label="Centralno zaključavanje"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="ASR" id="asr"/>}
+                                label="ASR"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Mehanička zaštita" id="mehanickaZastita"/>}
+                                label="Mehanička zaštita"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Child-Lock" id="childLock"/>}
+                                label="Child-Lock"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <h5>Oprema</h5>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Metalik boja" id="metalikBoja"/>}
+                                label="Metalik boja"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Servo volan" id="servoVolan"/>}
+                                label="Servo volan"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Šiber" id="siber"/>}
+                                label="Šiber"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Daljinsko zaključavanje" id="daljinskoZakljucavanje"/>}
+                                label="Daljinsko zaključavanje"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Tonirana stakla" id="toniranaStakla"/>}
+                                label="Tonirana stakla"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Električni podizači" id="elektricniPodizaci"/>}
+                                label="Električni podizači"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Električni retrovizori" id="elektricniRetrovizori"/>}
+                                label="Električni retrovizori"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Xenon svetla" id="xenonSvetla"/>}
+                                label="Xenon svetla"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Krovni nosač" id="krovniNosac"/>}
+                                label="Krovni nosač"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Kuka za vuču" id="kukaZaVucu"/>}
+                                label="Kuka za vuču"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Kamera" id="kamera"/>}
+                                label="Kamera"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="DPF" id="dpfFilter"/>}
+                                label="DPF"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Multimedija" id="multimedija"/>}
+                                label="Multimedija"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Parking senzori" id="parkingSenzori"/>}
+                                label="Parking senzori"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Sedišta podesiva po visini" id="podesivaSedista"/>}
+                                label="Sedišta podesiva po visini"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <h5>Stanje vozila</h5>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Prvi vlasnik" id="prviVlasnik"/>}
+                                label="Prvi vlasnik"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Garancija" id="garancija"/>}
+                                label="Garancija"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Garažiran" id="garaziran"/>}
+                                label="Garažiran"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Servisna knjiga" id="servisnaKnjiga"/>}
+                                label="Servisna knjiga"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Rezervni ključ" id="rezervniKljuc"/>}
+                                label="Rezervni ključ"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Restaurian" id="restauiran"/>}
+                                label="Restaurian"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Oldtimer" id="oldtimer"/>}
+                                label="Oldtimer"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Taxi" id="taxi"/>}
+                                label="Taxi"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup row>
+                            <FormControlLabel 
+                                control={<Checkbox onChange={handleCheckboxChange} name="Tuning" id="tuning"/>}
+                                label="Tuning"
+                            />
+                        </FormGroup>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <h5>Cena</h5>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormControl component="fieldset" fullWidth>
+                            <RadioGroup onChange={handleRadioGroupChange} value={radioVal} row>
+                                <FormControlLabel value="cenaPrava" className={classes.paddingRight34} control={<Radio/>} label="Cena"/>
+                                <FormControlLabel value="poDogovoru" className={classes.paddingRight34} control={<Radio/>} label="Po dogovoru"/>
+                                <FormControlLabel value="naUpit" className={classes.paddingRight34} control={<Radio/>} label="Na upit"/>
+                            </RadioGroup>
+                        </FormControl>
+                    </Grid>
+                    <Grid container alignItems="center" maxWidth="md" className="bg-white pl-2" spacing={2}>
+                        <Grid item xs={6}>
+                            <FormControl variant="outlined" fullWidth>
+                                <TextField label="Cena (€)" variant="outlined" type="number" disabled={disabledCena} name="cena" id="cena" onChange={handleTextFieldChange} InputLabelProps={{shrink: true}}/>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <FormGroup row>
+                                <FormControlLabel 
+                                    control={<Checkbox onChange={handleCheckboxChange} name="Fiksna cena" id="fiksnaCena"/>}
+                                    label="Fiksna cena"
+                                />
                             </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="ABS" id="abs"/>ABS
-                                </Label>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <FormGroup row>
+                                <FormControlLabel 
+                                    control={<Checkbox onChange={handleCheckboxChange} name="Moguće smanjenje" id="licitiranje"/>}
+                                    label="Moguće smanjenje"
+                                />
                             </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Alarm" id="alarm"/>Alarm
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1 pl-1">
-                        <Col xs="12" md={{ size: '3', offset:2 }} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Blokada motora" id="blokadaMotora"/>Blokada motora
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Kodirani ključ" id="kodiranKljuc"/>Kodirani ključ
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Centralno zaključavanje" id="centralnoZakljucavanje"/>Centralno zaključavanje
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1 pl-1">
-                        <Col xs="12" md={{ size: '3', offset:2 }} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="ASR" id="asr"/>ASR
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Mehanička zaštita" id="mehanickaZastita"/>Mehanička zaštita
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Child-Lock" id="childLock"/>Child-Lock
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3 pl-1">
-                        <Col xs="12" md={{ size: '8', offset:2 }}>
-                            <h5>Oprema</h5>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1 pl-1">
-                        <Col xs="12" md={{ size: '3', offset:2 }} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Metalik boja" id="metalikBoja"/>Metalik boja
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Servo volan" id="servoVolan"/>Servo volan
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Šiber" id="siber"/>Šiber
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1 pl-1">
-                        <Col xs="12" md={{ size: '3', offset:2 }} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Daljinsko zaključavanje" id="daljinskoZakljucavanje"/>Daljinsko zaključavanje
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Tonirana stakla" id="toniranaStakla"/>Tonirana stakla
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Električni podizači" id="elektricniPodizaci"/>Električni podizači
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1 pl-1">
-                        <Col xs="12" md={{ size: '3', offset:2 }} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Električni retrovizori" id="elektricniRetrovizori"/>Električni retrovizori
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Xenon svetla" id="xenonSvetla"/>Xenon svetla
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Krovni nosač" id="krovniNosac"/>Krovni nosač
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1 pl-1">
-                        <Col xs="12" md={{ size: '3', offset:2 }} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Kuka za vuču" id="kukaZaVucu"/>Kuka za vuču
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Kamera" id="kamera"/>Kamera
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="DPF" id="dpfFilter"/>DPF
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1 pl-1">
-                        <Col xs="12" md={{ size: '3', offset:2 }} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Multimedija" id="multimedija"/>Multimedija
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Parking senzori" id="parkingSenzori"/>Parking senzori
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Sedišta podesiva po visini" id="podesivaSedista"/>Sedišta podesiva po visini
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3 pl-1">
-                        <Col xs="12" md={{ size: '8', offset:2 }}>
-                            <h5>Stanje vozila</h5>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1 pl-1">
-                        <Col xs="12" md={{ size: '3', offset:2 }} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Prvi vlasnik" id="prviVlasnik"/>Prvi vlasnik
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Garancija" id="garancija"/>Garancija
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Garažiran" id="garaziran"/>Garažiran
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1 pl-1">
-                        <Col xs="12" md={{ size: '3', offset:2 }} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Servisna knjiga" id="servisnaKnjiga"/>Servisna knjiga
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Rezervni ključ" id="rezervniKljuc"/>Rezervni ključ
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Restaurian" id="restauiran"/>Restaurian
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1 pl-1">
-                        <Col xs="12" md={{ size: '3', offset:2 }} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Oldtimer" id="oldtimer"/>Oldtimer
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Taxi" id="taxi"/>Taxi
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Tuning" id="tuning"/>Tuning
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3 pl-1">
-                        <Col xs="12" md={{ size: '8', offset:2 }}>
-                            <h5>Cena</h5>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1">
-                        <Col xs="12" md={{ size: '3', offset:2 }} className="mt-1">
-                            <Input type="text" name="cena" id="cena" placeholder="Cena (€)" onChange={onChange}/>
-                        </Col>
-                        <Col xs="12" md={{ size: '2'}} className="mt-1 pt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Fiksna cena" id="fiksnaCena"/>Fiksna cena
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                        <Col xs="12" md={{ size: '3'}} className="mt-1 pt-1">
-                            <FormGroup check>
-                                <Label check>
-                                    <Input onChange={onCheckChange} type="checkbox" name="Moguće smanjenje" id="licitiranje"/>Moguće smanjenje
-                                </Label>
-                            </FormGroup>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3 pl-1">
-                        <Col xs="12" md={{ size: '8', offset:2 }}>
-                            <h5>Opis oglasa</h5>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1">
-                        <Col xs="12" md={{ size: '8', offset:2 }} className="mt-1">
-                            <Input className="textarea" name="dodatniOpis" type="textarea" rows="5" placeholder="Opis oglasa" onChange={onChange}/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3 pl-1">
-                        <Col xs="12" md={{ size: '8', offset:2 }}>
-                            <h5>Kontakt</h5>
-                        </Col>
-                    </Row>
-                    <Row className="mt-1">
-                        <Col xs="12" md={{ size: '4', offset:2 }} className="mt-1">
-                            <Input type="text" name="ime" id="ime" placeholder="Ime" onChange={onChange}/>
-                        </Col>
-                        <Col xs="12" md="4" className="mt-1">
-                            <Input type="text" name="telefon" id="telefon" placeholder="Telefon" onChange={onChange}/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3">
-                        <Col xs="12" md={{ size: '4', offset:2 }} className="mt-1">
-                            <Input type="text" name="adresa" id="adresa" placeholder="Adresa" onChange={onChange}/>
-                        </Col>
-                        <Col xs="12" md="4" className="mt-1">
-                            <Input type="text" name="mesto" id="mesto" placeholder="Mesto" onChange={onChange}/>
-                        </Col>
-                    </Row>
-                    <Row className="mt-3">
-                        <Col xs="12" md={{ size: '4', offset:2 }} className="mt-1">
-                            <Button color="info" block>Odustani</Button>
-                        </Col>
-                        <Col xs="12" md="4" className="mt-1">
-                            <Button color="danger" block>Send</Button>
-                        </Col>
-                    </Row>
-                </FormGroup>
-                </Form>  
-                </Col>    
-            </Row>      
-        </Container>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <h5>Opis oglasa</h5>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormControl variant="outlined" fullWidth>
+                            <TextField label="Opis oglasa" variant="outlined" name="dodatniOpis" id="dodatniOpis" rows={7} InputLabelProps={{shrink: true}} onChange={handleTextFieldChange} multiline/>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <h5>Kontakt</h5>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <TextField label="Ime" variant="outlined" name="ime" id="ime" onChange={handleTextFieldChange}/>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <TextField label="Telefon" variant="outlined" name="telefon" id="telefon" onChange={handleTextFieldChange}/>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <TextField label="Adresa" variant="outlined" name="adresa" id="adresa" onChange={handleTextFieldChange}/>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                            <TextField label="Mesto" variant="outlined" name="mesto" id="mesto" onChange={handleTextFieldChange}/>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6} className="mt-3 mb-3">
+                        <Button variant="outlined" fullWidth>
+                            Odustani
+                        </Button>
+                    </Grid>
+                    <Grid item xs={6} className="mt-3 mb-3">
+                        <Button variant="outlined" onClick={handleButtonSendClick} fullWidth>
+                            Pošalji
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Container>
+            </Container>
         </div>
     )
 }

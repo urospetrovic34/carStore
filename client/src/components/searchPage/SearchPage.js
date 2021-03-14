@@ -4,13 +4,13 @@ import Select from 'react-select'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {getCars} from '../../actions/carActions'
-import {Row,Col,Container,Button,Form} from 'react-bootstrap'
-import {Pagination,PaginationItem,PaginationLink,Input} from 'reactstrap'
+import {Row,Col,Container,Button} from 'react-bootstrap'
 import carsData from '../../util/carData.json'
 import years from '../../util/miscData.json'
 import {withRouter,Link} from 'react-router-dom'
 import StrelicaLeft from './angle-circle-arrow-left.svg'
 import StrelicaRight from './angle-circle-arrow-right.svg'
+import Slider, { Range } from 'rc-slider'
 
 const state = {
     sort:'',
@@ -19,7 +19,7 @@ const state = {
     minGodina:0,
     maxGodina:0,
     marka:"",
-    model:"",
+    model:""
 }
 
 const SearchPage = ({car:{cars},getCars,history}) => {
@@ -30,6 +30,8 @@ const SearchPage = ({car:{cars},getCars,history}) => {
     const [filterQuery, setFilterQuery] = useState("")
     const [marka,setMarka] = useState(null)
     const [model,setModel] = useState(null)
+    const [minCena,setMinCena] = useState(0)
+    const [maxCena,setMaxCena] = useState(0)
     const [modelList,setModelList] = useState([])
     const [godinaList,setGodinaList] = useState([])
 
@@ -75,9 +77,13 @@ const SearchPage = ({car:{cars},getCars,history}) => {
         history.push(`/search?brojStrane=${cars.strana}${sortQuery}${query}`)
     }
 
+    console.log(cars.cene)
+
     useEffect(() => {
         getCars()
-    }, [getCars,cars,marka])
+        setMinCena(Math.min(cars.cene))
+        setMaxCena(Math.max(cars.cene))
+    }, [getCars,cars,minCena,maxCena])
 
     const onSort = (val,action) => {
         let proveraNiz = []
@@ -96,6 +102,13 @@ const SearchPage = ({car:{cars},getCars,history}) => {
         let query = `&sortBy=${sortBy}&orderBy=${orderBy}`
         setSortQuery(`&sortBy=${sortBy}&orderBy=${orderBy}`)
         history.push(`/search?brojStrane=${cars.strana}${query}`)
+    }
+
+    const onCenaSliderChange = (niz) => {
+        console.log(niz)
+    }
+
+    const calMinCena = () => {
     }
 
     /*const pageArray = []
@@ -122,9 +135,8 @@ const SearchPage = ({car:{cars},getCars,history}) => {
                 </Row>
                 <Row>
                     <Col xs="3" className="mt-2 pl-4 pr-4">
-                        <Form>
-                        <Row className="border p-2">
-                            <Col xs="12">
+                        <Row className="p-2">
+                            <Col xs="12" className="border p-1">
                                 <Row>
                                     <Col xs="12">
                                         <Select placeholder="Marka" value={marka} options={carsData} onChange={onMarkaChange} getOptionLabel={e => e.brand} getOptionValue={e => e.brand}/>
@@ -149,8 +161,14 @@ const SearchPage = ({car:{cars},getCars,history}) => {
                                     </Col>
                                 </Row>
                             </Col>
+                            <Col xs="12" className="border p-1 mt-2">
+                                <Row>
+                                    <Col xs="12">
+                                        <Range step={1} min={minCena} max={maxCena} defaultValue={[minCena,maxCena]} onChange={onCenaSliderChange}/>
+                                    </Col>
+                                </Row>
+                            </Col>
                         </Row>
-                        </Form>
                     </Col>
                     <Col xs="9" className="searchFlex mt-1">
                         {cars.cars.map(({slike,cena,marka,godiste,model,obelezje,kilometraza,mesto,telefon,_id})=>(
@@ -178,10 +196,9 @@ const SearchPage = ({car:{cars},getCars,history}) => {
                         ))}
                     </Col>
                 </Row>
-                                        
-                                        
+                
                 <Row className="mt-2">
-                    <Col xs={{offset:7}}>
+                    <Col xs={{offset:11}}>
                         {
                             cars.strana === 1 ? 
                                 (

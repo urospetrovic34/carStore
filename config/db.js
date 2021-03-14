@@ -6,7 +6,7 @@ const connectDB = async() => {
         console.log(`MONGO BAZA JE USPOSTAVLJENA - ${connection.connection.host}`)
     }
     catch(error){
-        console.error(err)
+        console.error(error)
     }
 }
 

@@ -159,28 +159,36 @@
     {
       "karoserije":[
         {
-          "value": "Limuzina"
+          "value": "Limuzina",
+          "index":0
         },
         {
-          "value": "Hečbek"
+          "value": "Hečbek",
+          "index":1
         },
         {
-          "value": "Karavan"
+          "value": "Karavan",
+          "index":2
         },
         {
-          "value": "Kupe"
+          "value": "Kupe",
+          "index":3
         },
         {
-          "value": "Kabriolet"
+          "value": "Kabriolet",
+          "index":4
         },
         {
-          "value": "Džip"
+          "value": "Džip",
+          "index":5
         },
         {
-          "value": "Pikap"
+          "value": "Pikap",
+          "index":6
         },
         {
-          "value": "Minivan"
+          "value": "Minivan",
+          "index":7
         }
       ]
     },
@@ -359,39 +367,34 @@
     {
       "zamene":[
         {
-          "zamena": "Bez zamene",
-          "type":"hidden"
+          "zamena": "Bez zamene"
         },
         {
-          "zamena": "Zamena za jeftinije",
-          "type":"textarea"
+          "zamena": "Zamena za jeftinije"
         },
         {
-          "zamena": "U istoj ceni",
-          "type":"textarea"
+          "zamena": "U istoj ceni"
         },
         {
-          "zamena": "Zamena za skuplje",
-          "type":"textarea"
+          "zamena": "Zamena za skuplje"
         },
         {
-          "zamena": "Sa zamenom",
-          "type":"textarea"
+          "zamena": "Sa zamenom"
         }
       ]
     },
     {
       "poreklaVozila":[
         {
-          "porekloVozila": "Domaće tablice",
+          "value": "Domaće tablice",
           "readOnly":true
         },
         {
-          "porekloVozila": "Na ime kupca",
+          "value": "Na ime kupca",
           "readOnly":false
         },
         {
-          "porekloVozila": "Strane tablice",
+          "value": "Strane tablice",
           "readOnly":false
         }
       ]

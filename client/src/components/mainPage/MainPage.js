@@ -31,7 +31,7 @@ export class MainPage extends Component {
                             <Filter/>
                         </Col>
                     </Row>
-                    <Row className="mt-3">
+                    {/*<Row className="mt-3">
                         <Col xs="12" md="6">
                             <div className="carsDisplay">
                             {this.props.car.cars.map(({slike,marka,model,_id,cena})=>(
@@ -47,7 +47,7 @@ export class MainPage extends Component {
                         </Col>
                         <Col xs="12" md="6">
                         </Col>
-                            </Row>
+                            </Row>*/}
                 </Container>
             </div>
         )
